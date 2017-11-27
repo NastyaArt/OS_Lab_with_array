@@ -82,6 +82,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/cygdrive/d/Nastya/CLion/Lab1_OS/CMakeLists.txt">
+			<Option target="MyExecutable"/>
+		</Unit>
 		<Unit filename="/cygdrive/d/Nastya/CLion/Lab1_OS/main.c">
 			<Option target="MyExecutable"/>
 		</Unit>
@@ -95,6 +98,15 @@
 			<Option target="MyExecutable"/>
 		</Unit>
 		<Unit filename="/cygdrive/d/Nastya/CLion/Lab1_OS/test.txt">
+			<Option target="MyExecutable"/>
+		</Unit>
+		<Unit filename="/cygdrive/d/Nastya/CLion/Lab1_OS/test1.txt">
+			<Option target="MyExecutable"/>
+		</Unit>
+		<Unit filename="/cygdrive/d/Nastya/CLion/Lab1_OS/test2.txt">
+			<Option target="MyExecutable"/>
+		</Unit>
+		<Unit filename="/cygdrive/d/Nastya/CLion/Lab1_OS/test3.txt">
 			<Option target="MyExecutable"/>
 		</Unit>
 		<Unit filename="/cygdrive/d/Nastya/CLion/Lab1_OS/tests.c">

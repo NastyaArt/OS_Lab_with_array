@@ -1,0 +1,23 @@
+Testing compression
+Size - 10000 
+Time: 1455.084000 msec
+
+Testing compression
+Size - 20000 
+Time: 6487.371000 msec
+
+Testing compression
+Size - 30000 
+Time: 19623.123000 msec
+
+Testing compression
+Size - 40000 
+Time: 32276.846000 msec
+
+Testing compression
+Size - 50000 
+Time: 50851.909000 msec
+
+Testing compression
+Size - 60000 
+Time: 79011.520000 msec

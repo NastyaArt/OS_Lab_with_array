@@ -124,7 +124,7 @@ int _read (VA ptr, void* pBuffer, size_t szBuffer)
         {
             if (ptr>=manager[i].first && ptr<manager[i].first+manager[i].size)
             {
-                if  (szBuffer < (manager[i].first+manager[i].size)-ptr)
+                if  (szBuffer > (manager[i].first+manager[i].size)-ptr)
                     return -2;
                 else
                 {
@@ -164,7 +164,10 @@ int _write (VA ptr, void* pBuffer, size_t szBuffer)
             if (ptr>=manager[i].first && ptr<manager[i].first+manager[i].size)
             {
                 if  (szBuffer > (manager[i].first+manager[i].size)-ptr)
+                {
                     return -2;
+                }
+
                 else
                 {
                     memcpy(ptr, pBuffer, szBuffer);
