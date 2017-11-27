@@ -1,0 +1,4 @@
+
+Testing compression
+Size - 60000 
+Time: 102329.854000 msec

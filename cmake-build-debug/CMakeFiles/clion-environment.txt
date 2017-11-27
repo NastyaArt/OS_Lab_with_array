@@ -1,0 +1,3 @@
+ToolSet: 2.9.0@D:\Nastya\Programs\CygWin
+Options: 
+CMake: 3.8.2@D:\Nastya\Programs\CLion 2017.2.3\bin\cmake_cygwin\bin\cmake.exe
