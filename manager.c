@@ -46,7 +46,7 @@ void compressionMemory(int pos)
 int _malloc (VA* ptr, size_t szBlock)
 {
     if (szBlock>freeMemSize)                                //нехватка свободной памяти
-        return -2;
+        return LACK_OF_MEMORY;
     for (int i=0; i < memSize; i++)
     {
         if (manager[i].isEmpty)                 //находим пустой блок
@@ -64,10 +64,10 @@ int _malloc (VA* ptr, size_t szBlock)
             manager[i].size = szBlock;
             manager[i].isEmpty = false;
             freeMemSize -= szBlock;
-            return 0;
+            return SUCCESS;
         }
     }
-    return 1;
+    return UNKNOWN_ERROR;
 }
 
 /**
@@ -85,17 +85,17 @@ int _malloc (VA* ptr, size_t szBlock)
 int _free (VA ptr)
 {
     if (ptr==NULL)
-        return -1;
+        return INCORRECT_PARAMETRS;
     int i;
     for (i= 0; i<memSize; i++)
     {
         if (ptr==manager[i].first)
         {
             compressionMemory(i);
-            return 0;
+            return SUCCESS;
         }
     }
-    return 1;
+    return UNKNOWN_ERROR;
 
 }
 
@@ -117,7 +117,7 @@ int _free (VA ptr)
 int _read (VA ptr, void* pBuffer, size_t szBuffer)
 {
     if (ptr == NULL || pBuffer == NULL)    //проверка является ли адрес, буфер и размер буфера корректными
-        return -1;
+        return INCORRECT_PARAMETRS;
     for (int i=0; i<memSize; i++)
     {
         if (!manager[i].isEmpty)
@@ -125,17 +125,16 @@ int _read (VA ptr, void* pBuffer, size_t szBuffer)
             if (ptr>=manager[i].first && ptr<manager[i].first+manager[i].size)
             {
                 if  (szBuffer > (manager[i].first+manager[i].size)-ptr)
-                    return -2;
+                    return OUT_OF_BLOCK;
                 else
                 {
                     memcpy(pBuffer, ptr, szBuffer);
-                    return 0;
+                    return SUCCESS;
                 }
             }
         }
-        else return 1;
+        else return UNKNOWN_ERROR;
     }
-    return 1;
 }
 
 /**
@@ -156,7 +155,7 @@ int _read (VA ptr, void* pBuffer, size_t szBuffer)
 int _write (VA ptr, void* pBuffer, size_t szBuffer)
 {
     if (ptr == NULL || pBuffer == NULL)    //проверка является ли адрес, буфер и размер буфера корректными
-        return -1;
+        return INCORRECT_PARAMETRS;
     for (int i=0; i<memSize; i++)
     {
         if (!manager[i].isEmpty)
@@ -165,19 +164,18 @@ int _write (VA ptr, void* pBuffer, size_t szBuffer)
             {
                 if  (szBuffer > (manager[i].first+manager[i].size)-ptr)
                 {
-                    return -2;
+                    return OUT_OF_BLOCK;
                 }
 
                 else
                 {
                     memcpy(ptr, pBuffer, szBuffer);
-                    return 0;
+                    return SUCCESS;
                 }
             }
         }
-        else return 1;
+        else return UNKNOWN_ERROR;
     }
-    return 1;
 }
 
 /**
@@ -198,15 +196,21 @@ int _write (VA ptr, void* pBuffer, size_t szBuffer)
 int _init (int n, int szPage)
 {
     if (n < 1 || szPage < 1 || n*szPage > MAX_MEMORY_SIZE)
-        return -1;
+        return INCORRECT_PARAMETRS;
     memSize = n*szPage;
     phisMem=(VA)malloc(memSize*sizeof(VA));
     if (phisMem == NULL)
-        return 1;
+        return UNKNOWN_ERROR;
     manager = malloc(memSize * sizeof(struct Block));
     for (int i = 0; i <= memSize; i++)
         manager[i].isEmpty = true;
     freeMemSize = memSize;
-    return 0;
+    return SUCCESS;
+}
+
+int _free_memory()
+{
+    free(manager);
+    free(phisMem);
 }
 

@@ -13,17 +13,23 @@ void run_init_tests()
 
 void init_test_incorrect_data()          //некорректные данные
 {
-    assert(_init(1, -5)==-1);
+    assert(_init(1, -5)==INCORRECT_PARAMETRS);
+
+    _free_memory();
 }
 
 void init_test_out_of_size()          //попытка выделить память больше допустимого
 {
-    assert(_init(1, 110000)==-1);
+    assert(_init(1, 110000)==INCORRECT_PARAMETRS);
+
+    _free_memory();
 }
 
 void init_test_success()          //успешная инициализация
 {
-    assert(_init(1, 180)==0);
+    assert(_init(1, 180)==SUCCESS);
+
+    _free_memory();
 }
 
 void run_malloc_tests()
@@ -46,10 +52,12 @@ void malloc_test_memory_lack()          //нехватка памяти
     _malloc(&ptr1, 4);
     _malloc(&ptr2, 4);
 
-    assert(_malloc(&ptr3, 4)==-2);
+    assert(_malloc(&ptr3, 4)==LACK_OF_MEMORY);
 
     _free(ptr1);
     _free(ptr2);
+
+    _free_memory();
 }
 
 void malloc_test_out_of_memory()        //нехватка памяти
@@ -57,7 +65,9 @@ void malloc_test_out_of_memory()        //нехватка памяти
     _init(1, 10);
     VA ptr;
 
-    assert(_malloc(&ptr, 11)==-2);
+    assert(_malloc(&ptr, 11)==LACK_OF_MEMORY);
+
+    _free_memory();
 }
 
 void malloc_test_success()              //успешное добавление блока
@@ -65,9 +75,11 @@ void malloc_test_success()              //успешное добавление блока
     _init(1, 10);
     VA ptr;
 
-    assert(_malloc(&ptr, 1)==0);
+    assert(_malloc(&ptr, 1)==SUCCESS);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void run_free_tests()
@@ -87,9 +99,11 @@ void free_test_incorrect_address()          //некорректный адрес
     VA ptr1=NULL;
     _malloc(&ptr, 40);
 
-    assert(_free(ptr1)==-1);
+    assert(_free(ptr1)==INCORRECT_PARAMETRS);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void free_test_success()                    //успешное удаление блока
@@ -98,7 +112,9 @@ void free_test_success()                    //успешное удаление блока
     VA ptr;
     _malloc(&ptr, 40);
 
-    assert(_free(ptr)==0);
+    assert(_free(ptr)==SUCCESS);
+
+    _free_memory();
 }
 
 
@@ -125,9 +141,11 @@ void write_test_incorrect_address_of_block()          //некорректный адрес блока
 
     VA pBuffer = "string";
 
-    assert(_write(ptr1, pBuffer, 6)==-1);
+    assert(_write(ptr1, pBuffer, 6)==INCORRECT_PARAMETRS);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void write_test_incorrect_address_of_buffer()          //некорректный адрес буфера
@@ -138,9 +156,11 @@ void write_test_incorrect_address_of_buffer()          //некорректный адрес буфе
 
     VA pBuffer = NULL;
 
-    assert(_write(ptr, pBuffer, 6)==-1);
+    assert(_write(ptr, pBuffer, 6)==INCORRECT_PARAMETRS);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void write_test_out_of_block()          //размер буфера больше размера участка блока для записи
@@ -150,9 +170,11 @@ void write_test_out_of_block()          //размер буфера больше размера участка б
     VA ptr;
     _malloc(&ptr, 3);
 
-    assert(_write(ptr, pBuffer, 6)==-2);
+    assert(_write(ptr, pBuffer, 6)==OUT_OF_BLOCK);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void write_test_out_of_block2()          //размер буфера больше размера блока
@@ -162,9 +184,11 @@ void write_test_out_of_block2()          //размер буфера больше размера блока
     VA ptr;
     _malloc(&ptr, 10);
 
-    assert(_write(ptr+6, pBuffer, 5)==-2);
+    assert(_write(ptr+6, pBuffer, 5)==OUT_OF_BLOCK);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void write_test_success()          //успешная запись информации в блок
@@ -173,17 +197,18 @@ void write_test_success()          //успешная запись информации в блок
     VA ptr;
     _malloc(&ptr, 4);
 
-
     VA pBuffer = "qwer";
-    assert(_write(ptr, pBuffer, 4)==0);
+    assert(_write(ptr, pBuffer, 4)==SUCCESS);
 
     VA pBuffer2=(VA)malloc(4 * sizeof(VA));
 
-    _read(ptr, pBuffer2, 4);
+    assert(_read(ptr, pBuffer2, 4)==SUCCESS);
 
-    assert(strcmp (pBuffer, pBuffer2)==0);
+    assert(strncmp (pBuffer, pBuffer2, 4)==SUCCESS);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void write_test_with_shift_success() //успешная запись в середину блока
@@ -193,15 +218,17 @@ void write_test_with_shift_success() //успешная запись в середину блока
     _malloc(&ptr, 8);
 
     VA pBuffer = "qwer";
-    assert(_write(ptr+2, pBuffer, 4)==0);
+    assert(_write(ptr+2, pBuffer, 4)==SUCCESS);
 
     VA pBuffer2=(VA)malloc(4 * sizeof(VA));
 
-    assert(_read(ptr+2, pBuffer2, 4)==0);
+    assert(_read(ptr+2, pBuffer2, 4)==SUCCESS);
 
-    assert(strcmp (pBuffer, pBuffer2)==0);
+    assert(strncmp (pBuffer, pBuffer2, 4)==SUCCESS);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void run_read_tests()
@@ -229,9 +256,11 @@ void read_test_incorrect_address_of_buffer()          //некорректный адрес
 
     VA pBuffer = NULL;
 
-    assert(_read(ptr, pBuffer, 5)==-1);
+    assert(_read(ptr, pBuffer, 5)==INCORRECT_PARAMETRS);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void read_test_incorrect_address_of_block()          //некорректный адрес
@@ -244,9 +273,11 @@ void read_test_incorrect_address_of_block()          //некорректный адрес
 
     VA pBuffer=(VA)malloc(3 * sizeof(VA));
 
-    assert(_read(ptr1, pBuffer, 5)==-1);
+    assert(_read(ptr1, pBuffer, 5)==INCORRECT_PARAMETRS);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void read_test_out_of_block()          //размер буфера больше размера блока
@@ -258,9 +289,11 @@ void read_test_out_of_block()          //размер буфера больше размера блока
 
     VA ptrBuf=(VA)malloc(6 * sizeof(VA));
 
-    assert(_read(ptr, ptrBuf, 6)==-2);
+    assert(_read(ptr, ptrBuf, 6)==OUT_OF_BLOCK);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void read_test_out_of_block2()          //размер буфера больше размера блока
@@ -272,9 +305,11 @@ void read_test_out_of_block2()          //размер буфера больше размера блока
 
     VA ptrBuf=(VA)malloc(5 * sizeof(VA));
 
-    assert(_read(ptr+6, ptrBuf, 5)==-2);
+    assert(_read(ptr+6, ptrBuf, 5)==OUT_OF_BLOCK);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void read_test_success()          //успешное чтение информации всего блока
@@ -287,11 +322,13 @@ void read_test_success()          //успешное чтение информации всего блока
 
     VA pBuffer = (VA)malloc(5*sizeof(VA));
 
-    assert(_read(ptr, pBuffer, 5)==0);
+    assert(_read(ptr, pBuffer, 5)==SUCCESS);
 
-    assert(strcmp (pBuffer, pBuffer2)==0);
+    assert(strcmp (pBuffer, pBuffer2)==SUCCESS);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void read_test_with_shift_success()          //успешное чтение части информации части блока блока
@@ -304,11 +341,13 @@ void read_test_with_shift_success()          //успешное чтение части информации 
 
     VA pBuffer = (VA)malloc(3*sizeof(VA));
 
-    assert(_read(ptr+2, pBuffer, 3)==0);
+    assert(_read(ptr+2, pBuffer, 3)==SUCCESS);
 
-    assert(strcmp (pBuffer, pBuffer2+2)==0);
+    assert(strcmp (pBuffer, pBuffer2+2)==SUCCESS);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void read_test_with_shift_from_center_success()          //успешное чтение части информации из середины блока
@@ -321,11 +360,13 @@ void read_test_with_shift_from_center_success()          //успешное чтение части
 
     VA pBuffer = (VA)malloc(3*sizeof(VA));
 
-    assert(_read(ptr+2, pBuffer, 3)==0);
+    assert(_read(ptr+2, pBuffer, 3)==SUCCESS);
 
-    assert(strcmp (pBuffer, pBuffer2+2)==0);
+    assert(strcmp (pBuffer, pBuffer2+2)==SUCCESS);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void read_test_with_shift_from_center_success2()          //успешное чтение части информации из середины блока
@@ -334,15 +375,17 @@ void read_test_with_shift_from_center_success2()          //успешное чтение част
     VA ptr;
     _malloc(&ptr, 10);
     VA pBuffer2 = "first";
-    assert(_write(ptr+2, pBuffer2, 5)==0);
+    assert(_write(ptr+2, pBuffer2, 5)==SUCCESS);
 
     VA pBuffer = (VA)malloc(3*sizeof(VA));
 
-    assert(_read(ptr+3, pBuffer, 3)==0);
+    assert(_read(ptr+3, pBuffer, 3)==SUCCESS);
 
-    assert(strncmp (pBuffer, pBuffer2+1, 3)==0);
+    assert(strncmp (pBuffer, pBuffer2+1, 3)==SUCCESS);
 
     _free(ptr);
+
+    _free_memory();
 }
 
 void run_load_tests()
@@ -389,6 +432,8 @@ void load_test_1(int size)
     fprintf(fp, "Time: %lf msec\n", time);
    // printf("Time: %lf msec\n", time);
 
+    _free_memory();
+
 }
 
 
@@ -426,6 +471,8 @@ void load_test_2(int size)
     fprintf(fp, "Time: %lf msec\n", time);
    // printf("Time: %lf msec\n", time);
 
+    _free_memory();
+
 }
 
 
@@ -461,5 +508,7 @@ void load_test_3(int size)
 
     fprintf(fp, "Time: %lf msec\n", time);
    // printf("Time: %lf msec\n", time);
+
+    _free_memory();
 
 }
